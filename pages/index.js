@@ -1,6 +1,7 @@
 import React from 'react'
 import fetch from 'isomorphic-fetch'
 import CountdownCircle from '../components/CountdownCircle'
+import Head from 'next/head'
 
 async function getEthPrice () {
   const response = await fetch('https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=EUR')
@@ -110,6 +111,12 @@ export default class extends React.Component {
 
     return (
       <div className='root'>
+        <Head>
+          <meta charSet='utf-8' />
+          <meta httpEquiv='x-ua-compatible' content='ie=edge' />
+          <title>Crypto Price</title>
+          <meta name='viewport' content='width=device-width, initial-scale=1' key='viewport' />
+        </Head>
         <h1 ref={(btcValue) => { this.btcValue = btcValue }}>
           <span>BTC</span>
           <span>

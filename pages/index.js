@@ -23,9 +23,12 @@ async function getBtcPrice () {
 
 export default class extends React.Component {
   static async getInitialProps () {
-    const ethPrice = await getEthPrice()
-    const ltcPrice = await getLtcPrice()
-    const btcPrice = await getBtcPrice()
+    const [ethPrice, ltcPrice, btcPrice] = await Promise.all([
+      await getEthPrice(),
+      await getLtcPrice(),
+      await getBtcPrice()
+    ])
+
     return { ethPrice, ltcPrice, btcPrice }
   }
 
@@ -117,25 +120,30 @@ export default class extends React.Component {
           <title>Crypto Price</title>
           <meta name='viewport' content='width=device-width, initial-scale=1' key='viewport' />
         </Head>
+
         <h1 ref={(btcValue) => { this.btcValue = btcValue }}>
           <span>BTC</span>
           <span>
             <span className='flash'>{btcPrice}</span> €
           </span>
         </h1>
+
         <h1 ref={(ethValue) => { this.ethValue = ethValue }}>
           <span>ETH</span>
           <span>
             <span className='flash'>{ethPrice}</span> €
           </span>
         </h1>
+
         <h1 ref={(ltcValue) => { this.ltcValue = ltcValue }}>
           <span>LTC</span>
           <span>
             <span className='flash'>{ltcPrice}</span> €
           </span>
         </h1>
+
         <CountdownCircle startToDraw={drawCircle} />
+
         <style global jsx>{`
           html, body {
             width: 100%;

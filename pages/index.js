@@ -2,6 +2,7 @@ import React from 'react'
 import fetch from 'isomorphic-fetch'
 import CountdownCircle from '../components/CountdownCircle'
 import Head from 'next/head'
+import { LineChart, Line } from 'recharts'
 
 async function getEthPrice () {
   const response = await fetch('https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=EUR')
@@ -29,7 +30,11 @@ export default class extends React.Component {
       await getBtcPrice()
     ])
 
-    return { ethPrice, ltcPrice, btcPrice }
+    return {
+      ethPrice: [ethPrice],
+      ltcPrice: [ltcPrice],
+      btcPrice: [btcPrice]
+    }
   }
 
   constructor (props) {
@@ -63,10 +68,10 @@ export default class extends React.Component {
       this.setState({ drawCircle: true })
 
       getEthPrice().then(newPrice => {
-        const prevPrice = this.state.ethPrice
+        const prevPrice = this.state.ethPrice[0]
 
         this.setState({
-          ethPrice: newPrice,
+          ethPrice: [...this.state.ethPrice, newPrice],
           drawCircle: false
         })
 
@@ -74,10 +79,10 @@ export default class extends React.Component {
       })
 
       getLtcPrice().then(newPrice => {
-        const prevPrice = this.state.ltcPrice
+        const prevPrice = this.state.ltcPrice[0]
 
         this.setState({
-          ltcPrice: newPrice,
+          ltcPrice: [...this.state.ltcPrice, newPrice],
           drawCircle: false
         })
 
@@ -85,10 +90,10 @@ export default class extends React.Component {
       })
 
       getBtcPrice().then(newPrice => {
-        const prevPrice = this.state.btcPrice
+        const prevPrice = this.state.btcPrice[0]
 
         this.setState({
-          btcPrice: newPrice,
+          btcPrice: [...this.state.btcPrice, newPrice],
           drawCircle: false
         })
 
@@ -108,9 +113,9 @@ export default class extends React.Component {
   render () {
     let { ethPrice, ltcPrice, btcPrice, drawCircle } = this.state
 
-    ethPrice = this.fixToTwoDecimals(ethPrice)
-    ltcPrice = this.fixToTwoDecimals(ltcPrice)
-    btcPrice = this.fixToTwoDecimals(btcPrice)
+    ethPrice = this.fixToTwoDecimals(ethPrice[0])
+    ltcPrice = this.fixToTwoDecimals(ltcPrice[0])
+    btcPrice = this.fixToTwoDecimals(btcPrice[0])
 
     return (
       <div className='root'>

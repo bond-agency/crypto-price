@@ -2,7 +2,6 @@ import React from 'react'
 import fetch from 'isomorphic-fetch'
 import CountdownCircle from '../components/CountdownCircle'
 import Head from 'next/head'
-import { LineChart, Line } from 'recharts'
 
 async function getEthPrice () {
   const response = await fetch('https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=EUR')
@@ -31,18 +30,18 @@ export default class extends React.Component {
     ])
 
     return {
-      ethPrice: [ethPrice],
-      ltcPrice: [ltcPrice],
-      btcPrice: [btcPrice]
+      ethPrices: [ethPrice],
+      ltcPrices: [ltcPrice],
+      btcPrices: [btcPrice]
     }
   }
 
   constructor (props) {
     super(props)
     this.state = {
-      ethPrice: props.ethPrice,
-      ltcPrice: props.ltcPrice,
-      btcPrice: props.btcPrice,
+      ethPrices: props.ethPrices,
+      ltcPrices: props.ltcPrices,
+      btcPrices: props.btcPrices,
       drawCircle: false
     }
   }
@@ -68,10 +67,11 @@ export default class extends React.Component {
       this.setState({ drawCircle: true })
 
       getEthPrice().then(newPrice => {
-        const prevPrice = this.state.ethPrice[0]
+        const { ethPrices } = this.state
+        const prevPrice = ethPrices[ethPrices.length - 1]
 
         this.setState({
-          ethPrice: [...this.state.ethPrice, newPrice],
+          ethPrices: [...this.state.ethPrices, newPrice],
           drawCircle: false
         })
 
@@ -79,10 +79,11 @@ export default class extends React.Component {
       })
 
       getLtcPrice().then(newPrice => {
-        const prevPrice = this.state.ltcPrice[0]
+        const { ltcPrices } = this.state
+        const prevPrice = ltcPrices[ltcPrices.length - 1]
 
         this.setState({
-          ltcPrice: [...this.state.ltcPrice, newPrice],
+          ltcPrices: [...this.state.ltcPrices, newPrice],
           drawCircle: false
         })
 
@@ -90,10 +91,11 @@ export default class extends React.Component {
       })
 
       getBtcPrice().then(newPrice => {
-        const prevPrice = this.state.btcPrice[0]
+        const { btcPrices } = this.state
+        const prevPrice = btcPrices[btcPrices.length - 1]
 
         this.setState({
-          btcPrice: [...this.state.btcPrice, newPrice],
+          btcPrices: [...btcPrices, newPrice],
           drawCircle: false
         })
 
@@ -111,11 +113,12 @@ export default class extends React.Component {
   }
 
   render () {
-    let { ethPrice, ltcPrice, btcPrice, drawCircle } = this.state
+    let { ethPrices, ltcPrices, btcPrices, drawCircle } = this.state
 
-    ethPrice = this.fixToTwoDecimals(ethPrice[0])
-    ltcPrice = this.fixToTwoDecimals(ltcPrice[0])
-    btcPrice = this.fixToTwoDecimals(btcPrice[0])
+    // Padded prices for rendering
+    let ethPrice = this.fixToTwoDecimals(ethPrices[ethPrices.length - 1])
+    let ltcPrice = this.fixToTwoDecimals(ltcPrices[ltcPrices.length - 1])
+    let btcPrice = this.fixToTwoDecimals(btcPrices[btcPrices.length - 1])
 
     return (
       <div className='root'>
